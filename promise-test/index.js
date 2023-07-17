@@ -1,58 +1,81 @@
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs')
+const fsPromise = require('fs').promises
+const path = require('path')
 
 // const getFileContent = (fileName, callback) => {
-//   const fullFileName = path.resolve(__dirname, 'file', fileName);
+//   const fullFileName = path.resolve(__dirname, 'file', fileName)
 //   fs.readFile(fullFileName, (err, data) => {
 //     if (err) {
-//       return console.error(err);
+//       console.log(err)
+//       return
 //     }
-//     callback(JSON.parse(data.toString()));
+//     callback(JSON.parse(data.toString()))
 //   })
 // }
 
-// 测试 callback-hell
 // getFileContent('a.json', aData => {
-//   console.log('a data', aData);
+//   console.log('a data', aData)
 //   getFileContent(aData.next, bData => {
-//     console.log('b data', bData);
+//     console.log('b data', bData)
 //     getFileContent(bData.next, cData => {
-//       console.log('c data', cData);
+//       console.log('c data', cData)
 //     })
 //   })
 // })
 
-// 用 promise 获取文件内容
 const getFileContentPromise = (fileName) => {
   return new Promise((resolve, reject) => {
-    const fullFileName = path.resolve(__dirname, 'file', fileName);
-    fs.readFile(fullFileName, (err, data) => {
-      if (err) {
-        reject(console.error(err));
-      }
-      resolve(JSON.parse(data.toString()));
+    const fullFileName = path.resolve(__dirname, 'file', fileName)
+    // fs.readFile(fullFileName, (err, data) => {
+    //   if (err) {
+    //     reject(err)
+    //   }
+    //   resolve(JSON.parse(data.toString()))
+    // })
+    fsPromise.readFile(fullFileName).then(data => {
+      resolve(JSON.parse(data.toString()))
+    }).catch(err => {
+      reject(err)
     })
   })
 }
 
 // getFileContentPromise('a.json').then(aData => {
-//   console.log('a data', aData);
+//   console.log('a data', aData)
 //   return getFileContentPromise(aData.next)
 // }).then(bData => {
-//   console.log('b data', bData);
+//   console.log('b data', bData)
 //   return getFileContentPromise(bData.next)
 // }).then(cData => {
-//   console.log('c data', cData);
+//   console.log('c data', cData)
 // })
 
-// 用 async await 获取文件内容
 const getFileContentAsync = async (fileName) => {
-  const aData = await getFileContentPromise(fileName);
-  console.log('a data', aData);
-  const bData = await getFileContentPromise(aData.next);
-  console.log('b data', bData);
-  const cData = await getFileContentPromise(bData.next);
-  console.log('c data', cData);
+  const aData = await getFileContentPromise(fileName)
+  console.log('a data', aData)
+  const bData = await getFileContentPromise(aData.next)
+  console.log('b data', bData)
+  const cData = await getFileContentPromise(bData.next)
+  console.log('c data', cData)
 }
+getFileContentAsync('a.json')
 
-getFileContentAsync('a.json');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

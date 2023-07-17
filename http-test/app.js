@@ -1,19 +1,19 @@
-const http = require('http');
-const querystring = require('querystring');
+const http = require('http')
+const qs = require('querystring')
 
-const sever = http.createServer((req, res) => {
-  const method = req.method;
-  const url = req.url;
+const server = http.createServer((req, res) => {
+  const method = req.method
+  const url = req.url
   const path = url.split('?')[0]
-  const query = querystring.parse(url.split('?')[1])
+  req.query = qs.parse(url.split('?')[1])
 
-  res.setHeader('Content-type', 'aplication/json')
+  res.setHeader('Content-type', 'application/json')
 
   const resData = {
     method,
     url,
     path,
-    query
+    query: req.query,
   }
 
   if (method === 'GET') {
@@ -24,11 +24,11 @@ const sever = http.createServer((req, res) => {
       postData += chunk.toString()
     })
     req.on('end', () => {
-      resData.postData = postData
+      resData.postData = JSON.parse(postData)
       res.end(JSON.stringify(resData))
     })
   }
-});
+})
 
-sever.listen(3000);
-console.log('OK');
+server.listen(8000)
+console.log('OK')

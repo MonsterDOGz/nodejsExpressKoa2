@@ -1,7 +1,7 @@
 const http = require('http');
 const serverHandle = require('../app');
 
-const POST = 8000;
+const POST = 8888;
 
 const server = http.createServer(serverHandle);
 
