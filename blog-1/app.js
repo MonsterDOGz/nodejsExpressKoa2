@@ -38,25 +38,42 @@ const serverHandle = async (req, res) => {
   // 解析 query
   req.query = qs.parse(url.split('?')[1])
 
+  // 解析 cookie
+  req.cookie = {}
+  const cookieStr = req.headers.cookie || '' // k1=v1;k2=v2;k3=v3
+  cookieStr.split(';').forEach(item => {
+    if (!item) {
+      return
+    }
+    const arr = item.split('=')
+    const key = arr[0].trim()
+    const val = arr[1].trim()
+    req.cookie[key] = val
+  })
+  
   // 处理 post data
   const postData = await getPostData(req)
   req.body = postData
   
   // 处理 blog 路由
-  const blogData = await handleBlogRouter(req, res)
-  if (blogData) {
-    res.end(
-      JSON.stringify(blogData)
-    )
+  const blogResult = handleBlogRouter(req, res)
+  if (blogResult) {
+    blogResult.then(blogData => {
+      res.end(
+        JSON.stringify(blogData)
+      )
+    })
     return
   }
   
   // 处理 user 路由
-  const userData = await handleUserRouter(req, res)
-  if (userData) {
-    res.end(
-      JSON.stringify(userData)
-    )
+  const userResult = handleUserRouter(req, res)
+  if (userResult) {
+    userResult.then(userData => {
+      res.end(
+        JSON.stringify(userData)
+      )
+    })
     return
   }
 

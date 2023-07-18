@@ -1,43 +1,56 @@
-const pool = require('../../pool')
+const { exec } = require('../db/mysql')
 
-// ？？？？？？？？？？？？？？如何实现模糊搜素，以及多表联查
 const getList = (author, keyword) => {
-  return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM nodejs_blog1_blog'
-    pool.query(sql, [], (err, result) => {
-      if (err) reject(err)
-      resolve(result)
-    })
-  })
+  let sql = 'select * from blogs where 1=1'
+  if (author) {
+    sql += ` and author='${author}'`
+  }
+  if (keyword) {
+    sql += ` and title like '%${keyword}%'`
+  }
+  sql += ' order by createtime desc;'
+
+  // 返回 promise
+  return exec(sql)
 }
 
 const getDetail = (id) => {
-  return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM nodejs_blog1_blog WHERE bid=?'
-    pool.query(sql, [id], (err, result) => {
-      if (err) reject(err)
-      resolve(result)
-    })
+  let sql = `select * from blogs where id=${id}`
+  return exec(sql).then(rows => {
+    return rows[0]
   })
 }
 
-// ？？？？？？？？？？？？？？如何实现当前用户 id 获取
-const newBlog = (blogData = {}) => {
-  // blogData 是一个博客对象，包含 title content 属性
-  return {
-    id: 3 // 表示新建博客，插入到数据表里面的 id
-  }
+const newBlog = (blogData = {}, id) => {
+  const { title, content, author } = blogData
+  const sql = `insert into blogs (title, content, createtime, author) values ('${title}', '${content}', ${Date.now()}, '${author}');`
+  return exec(sql).then(insertData => {
+    return {
+      id: insertData.insertId
+    }
+  })
 }
 
 const updateBlog = (id, blogData = {}) => {
   // id 就是要更新博客的 id
-  return true
+  const { title, content } = blogData
+  const sql = `update blogs set title='${title}', content='${content}' where id=${id};`
+  return exec(sql).then(updateData => {
+    if (updateData.affectedRows > 0) {
+      return true
+    }
+    return false
+  })
 }
 
-// ？？？？？？？？？？？？？？如何实现虚拟删除
-const delBlog = (id) => {
-  // id 就是要删除博客的 id
-  return false
+const delBlog = (id, author) => {
+  const sql = `delete from blogs where id=${id} and author='${author}';`
+  return exec(sql).then(delData => {
+    if (delData.affectedRows > 0) {
+      return true
+    }
+    return false
+  })
 }
 
 module.exports = {

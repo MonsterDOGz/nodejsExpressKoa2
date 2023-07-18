@@ -1,19 +1,13 @@
-const pool = require('../../pool')
+const { exec } = require('../db/mysql')
 
-const loginCheck = (uname, upwd) => {
-  return new Promise((resolve, reject) => {
-    const sql = 'SELECT * FROM nodejs_blog1_user WHERE uname=? AND upwd=?'
-    pool.query(sql, [uname, upwd], (err, result) => {
-      if (err) reject(err)
-      if (result.length > 0) {
-        resolve({ val: true, result })
-      } else {
-        resolve({ val: false })
-      }
-    })
+const login = (username, password) => {
+  const sql = `select username, realname from users where username='${username}' and password='${password}'`
+  return exec(sql).then(result => {
+    console.log(result)
+    return result[0] || {}
   })
 }
 
 module.exports = {
-  loginCheck
+  login
 }
