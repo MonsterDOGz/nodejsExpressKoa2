@@ -1,4 +1,5 @@
 const { exec } = require('../db/mysql')
+const xss = require('xss')
 
 const getList = (author, keyword) => {
   let sql = 'select * from blogs where 1=1'
@@ -23,7 +24,7 @@ const getDetail = (id) => {
 
 const newBlog = (blogData = {}, id) => {
   const { title, content, author } = blogData
-  const sql = `insert into blogs (title, content, createtime, author) values ('${title}', '${content}', ${Date.now()}, '${author}');`
+  const sql = `insert into blogs (title, content, createtime, author) values ('${xss(title)}', '${xss(content)}', ${Date.now()}, '${author}');`
   return exec(sql).then(insertData => {
     return {
       id: insertData.insertId
@@ -34,7 +35,7 @@ const newBlog = (blogData = {}, id) => {
 const updateBlog = (id, blogData = {}) => {
   // id 就是要更新博客的 id
   const { title, content } = blogData
-  const sql = `update blogs set title='${title}', content='${content}' where id=${id};`
+  const sql = `update blogs set title='${xss(title)}', content='${xss(content)}' where id=${id};`
   return exec(sql).then(updateData => {
     if (updateData.affectedRows > 0) {
       return true
