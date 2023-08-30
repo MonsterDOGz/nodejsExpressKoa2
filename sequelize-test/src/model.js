@@ -5,7 +5,7 @@ const seq = require('./db')
 const User = seq.define('user', {
   // id 会自动创建，并设为主键、自增
 
-  username: {
+  userName: {
     type: Sequelize.STRING, // varchar(255)
     allowNull: false, // 不允许为空
   },
@@ -13,8 +13,9 @@ const User = seq.define('user', {
     type: Sequelize.STRING,
     allowNull: false,
   },
-  realname: {
+  nickName: {
     type: Sequelize.STRING,
+    comment: '昵称', // 注释
   },
 })
 
@@ -30,12 +31,22 @@ const Blog = seq.define('blog', {
     type: Sequelize.TEXT, // TEXT 储存大文件
     allowNull: false,
   },
-  author: {
-    type: Sequelize.STRING,
+  userId: {
+    type: Sequelize.INTEGER,
     allowNull: false,
   },
 
   // createdAt updatedAt 自动创建
+})
+
+// 外键关联
+Blog.belongsTo(User, {
+  // 创建外键 Blog.userId -> User.id
+  foreignKey: 'userId',
+})
+User.hasMany(Blog, {
+  // 创建外键 Blog.userId -> User.id
+  foreignKey: 'userId',
 })
 
 module.exports = {

@@ -14,7 +14,7 @@ const conf = {
 
 // 创建 sequelize 实例
 const seq = new sequelize(
-  'myblog_sequelize', // 数据库名称
+  'koa2_weibo_db', // 数据库名称
   'root', // 用户名
   '123zhoujie123', // 密码
   conf

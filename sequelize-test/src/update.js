@@ -11,7 +11,7 @@ const { Blog } = require('./model')
     // 条件
     {
       where: {
-        id: 200
+        id: 1
       }
     }
   )

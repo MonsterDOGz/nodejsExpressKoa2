@@ -1,4 +1,4 @@
-const { Blog } = require('./model')
+const { Blog, User } = require('./model')
 
 !(async function () {
 
@@ -6,11 +6,20 @@ const { Blog } = require('./model')
     // 条件
     {
       where: {
-        id: 2,
-        author: 'zhangsan'
+        id: 3
       }
     }
   )
-  console.log('res', res)
+  console.log('res', res > 0)
+
+  const res2 = await User.destroy(
+    // 条件
+    {
+      where: {
+        id: 2
+      }
+    }
+  )
+  console.log('res2', res2 > 0)
 
 })()

@@ -6,17 +6,37 @@ const {User, Blog} = require('./model')
 
   // 创建 user
   const zhangsan = await User.create({
-    username: 'zhangsan',
+    userName: 'zhangsan',
     password: '123',
-    realname: '张三'
+    nickName: '张三'
   })
   console.log('zhangsan', zhangsan.dataValues)
+  const lisi = await User.create({
+    userName: 'lisi',
+    password: '123',
+    nickName: '李四'
+  })
+  console.log('lisi', lisi.dataValues)
 
   // 创建博客
-  const blog = await Blog.create({
-    title: '标题222',
-    content: '内容222',
-    author: 'zhangsan',
+  const blog1 = await Blog.create({
+    title: '标题1',
+    content: '内容1',
+    userId: zhangsan.dataValues.id,
   })
-  console.log('blog', blog.dataValues)
+  const blog2 = await Blog.create({
+    title: '标题2',
+    content: '内容2',
+    userId: zhangsan.dataValues.id,
+  })
+  const blog3 = await Blog.create({
+    title: '标题3',
+    content: '内容3',
+    userId: zhangsan.dataValues.id,
+  })
+  const blog4 = await Blog.create({
+    title: '标题4',
+    content: '内容4',
+    userId: lisi.dataValues.id,
+  })
 })()
